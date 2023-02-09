@@ -16,6 +16,8 @@ def plot_overtime_balance_history(days: list[str], overtime_history: list[Durati
             data=go.Scatter(
                 x=days,
                 y=[duration.minutes for duration in cumulative_overtime_history],
+                text=[str(duration) for duration in cumulative_overtime_history],
+                hovertemplate="%{x} %{text}<extra></extra>",
                 mode="lines+markers"
             )
     )
