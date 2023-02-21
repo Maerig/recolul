@@ -1,5 +1,5 @@
 from recolul.duration import Duration
-from recolul.recoru import AttendanceChart, ChartEntry
+from recolul.recoru import AttendanceChart, ChartRow
 
 _MIN_HOURS_FOR_MANDATORY_BREAK = Duration(6 * 60)
 
@@ -8,12 +8,13 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
     days = []
     overtime_history = []
     for row in attendance_chart:
-        if not row[3].text:
+        if not row.clock_in_time:
             continue
 
-        days.append(row[0].text)
+        day = row.day
+        days.append(day.text)
         working_hours, _ = get_hours(row)
-        required_hours = Duration(0 if row[0].color in ["blue", "red"] else 8 * 60)  # No required hours for holidays
+        required_hours = Duration(0 if day.color in ["blue", "red"] else 8 * 60)  # No required hours for holidays
         overtime_history.append(working_hours - required_hours)
 
     return days, overtime_history
@@ -25,14 +26,14 @@ def get_overtime_balance(attendance_chart: AttendanceChart) -> Duration:
 
 
 def get_today_last_clock_in(attendance_chart: AttendanceChart) -> Duration:
-    return Duration.parse(attendance_chart[-1][3].text)
+    return Duration.parse(attendance_chart[-1].clock_in_time)
 
 
-def get_hours(chart_row: list[ChartEntry]) -> tuple[Duration, Duration]:
+def get_hours(chart_row: ChartRow) -> tuple[Duration, Duration]:
     """Returns (working_hours, break_time)"""
-    clock_in_time = Duration.parse(chart_row[3].text)
+    clock_in_time = Duration.parse(chart_row.clock_in_time)
     clock_out_time = (
-        Duration.parse(chart_row[4].text) if chart_row[4].text
+        Duration.parse(clock_out_time) if (clock_out_time := chart_row.clock_out_time)
         else Duration.now()
     )
     total_time = clock_out_time - clock_in_time

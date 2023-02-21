@@ -18,7 +18,7 @@ class ChartEntry:
 
     @property
     def color(self) -> str:
-        label = self._tag.find("label")
+        label = self._tag.find("label", recursive=False)
         if not label:
             return ""
         return label.attrs\
@@ -27,7 +27,30 @@ class ChartEntry:
             .removesuffix(";")
 
 
-AttendanceChart: TypeAlias = list[list[ChartEntry]]
+@dataclass
+class ChartRow:
+    """Row of the attendance chart"""
+    def __init__(self, tag: Tag):
+        self._tag = tag
+
+    def __getitem__(self, i) -> ChartEntry:
+        column = self._tag.select_one(f"td:nth-child({i + 1})", recursive=False)
+        return ChartEntry(column)
+
+    @property
+    def day(self) -> ChartEntry:
+        return self[0]
+
+    @property
+    def clock_in_time(self) -> str:
+        return self[3].text
+
+    @property
+    def clock_out_time(self) -> str:
+        return self[4].text
+
+
+AttendanceChart: TypeAlias = list[ChartRow]
 
 
 class RecoruSession:
@@ -55,14 +78,12 @@ class RecoruSession:
         self._login()
 
         response = self.session.post("https://app.recoru.in/ap/home/loadAttendanceChartGadget")
+        response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
         table_body = soup.select("#ID-attendanceChartGadgetTable > tbody")[0]
         return [
-            [
-                ChartEntry(column)
-                for column in row.find_all("td")
-            ]
-            for row in table_body.find_all("tr")
+            ChartRow(row)
+            for row in table_body.find_all("tr", recursive=False)
         ]
 
     def _login(self):
@@ -72,4 +93,5 @@ class RecoruSession:
             "authId": self._auth_id,
             "password": self._password
         }
-        self.session.post(url, data=form_data)
+        response = self.session.post(url, data=form_data)
+        response.raise_for_status()

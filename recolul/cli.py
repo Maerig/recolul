@@ -106,7 +106,7 @@ def _get_attendance_chart() -> AttendanceChart:
         # Remove rows without a clock-in time
         attendance_chart = [
             row for row in attendance_chart
-            if row[3].text
+            if row.clock_in_time
         ]
         return attendance_chart
 
