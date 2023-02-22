@@ -5,8 +5,9 @@ from getpass import getpass
 from recolul import plotting, time
 from recolul.config import Config
 from recolul.duration import Duration
-from recolul.recoru import AttendanceChart, RecoruSession
-from recolul.time import get_today_hours
+from recolul.recoru.attendance_chart import AttendanceChart
+from recolul.recoru.recoru_session import RecoruSession
+from recolul.time import get_work_time
 
 
 def balance(exclude_last_day: bool) -> None:
@@ -18,11 +19,9 @@ def balance(exclude_last_day: bool) -> None:
         return
 
     last_day = attendance_chart[-1]
-    working_hours, break_time = get_today_hours(attendance_chart)
-    print(f"\nLast day {last_day[0].text}")
-    print(f"  Clock-in: {last_day[3].text}")
-    print(f"  Working hours: {working_hours}")
-    print(f"  Break: {break_time}")
+    print(f"\nLast day {last_day.day.text}")
+    print(f"  Clock-in: {last_day.clock_in_time}")
+    print(f"  Working hours: {get_work_time(last_day)}")
 
 
 def when_to_leave() -> None:
@@ -103,7 +102,7 @@ def _get_attendance_chart() -> AttendanceChart:
         password=config.recoru_password
     ) as recoru_session:
         attendance_chart = recoru_session.get_attendance_chart()
-        # Remove rows without a clock-in time
+        # Remove rows without a work time
         attendance_chart = [
             row for row in attendance_chart
             if row.clock_in_time
