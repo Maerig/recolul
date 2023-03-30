@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from recolul.duration import Duration
 from recolul.recoru.attendance_chart import AttendanceChart, ChartRow
 
@@ -21,9 +23,10 @@ def get_work_time(chart_row: ChartRow) -> Duration:
     return current_work_time - break_time
 
 
-def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], list[Duration]]:
+def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], list[Duration], dict[str, Duration]]:
     days = []
     overtime_history = []
+    total_workplace_times = defaultdict(Duration)
     for row in attendance_chart:
         if not row.clock_in_time:
             continue
@@ -36,18 +39,19 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
         required_time = Duration(0 if day.color in ["blue", "red"] else 8 * 60)  # No required hours for holidays
         work_time = get_work_time(row)
         overtime_history.append(work_time - required_time)
+        total_workplace_times[row.workplace.text] += work_time
 
-    return days, overtime_history
+    return days, overtime_history, total_workplace_times
 
 
-def get_overtime_balance(attendance_chart: AttendanceChart) -> Duration:
-    _, history = get_overtime_history(attendance_chart)
-    return sum(history, Duration())
+def get_overtime_balance(attendance_chart: AttendanceChart) -> tuple[Duration, dict[str, Duration]]:
+    _, history, total_workplace_times = get_overtime_history(attendance_chart)
+    return sum(history, Duration()), total_workplace_times
 
 
 def get_leave_time(attendance_chart: AttendanceChart) -> tuple[Duration, bool]:
     day_base_hours = Duration(8 * 60)
-    overtime_balance = get_overtime_balance(attendance_chart[:-1])
+    overtime_balance, _ = get_overtime_balance(attendance_chart[:-1])
     last_clock_in = Duration.parse(attendance_chart[-1].clock_in_time)
 
     leave_time = last_clock_in + day_base_hours - overtime_balance

@@ -13,7 +13,11 @@ from recolul.time import get_work_time
 def balance(exclude_last_day: bool) -> None:
     attendance_chart = _get_attendance_chart()
     month = attendance_chart[:-1] if exclude_last_day else attendance_chart
-    print(f"Monthly overtime balance: {time.get_overtime_balance(month)}")
+    overtime_balance, total_workplace_times = time.get_overtime_balance(month)
+    print(f"Monthly overtime balance: {overtime_balance}")
+    print(f"Total time per workplace:")
+    for workplace, total_work_time in total_workplace_times.items():
+        print(f"  {workplace}: {total_work_time}")
 
     if exclude_last_day:
         return
@@ -53,7 +57,7 @@ def graph(exclude_last_day: bool) -> None:
     attendance_chart = _get_attendance_chart()
     if exclude_last_day and len(attendance_chart) > 1:
         attendance_chart = attendance_chart[:-1]
-    days, history = time.get_overtime_history(attendance_chart)
+    days, history, _ = time.get_overtime_history(attendance_chart)
     plotting.plot_overtime_balance_history(days, history)
 
 

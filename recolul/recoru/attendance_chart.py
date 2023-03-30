@@ -64,6 +64,10 @@ class ChartRow:
         return self[ChartColumn.DATE]
 
     @property
+    def workplace(self) -> ChartEntry:
+        return self[ChartColumn.WORKPLACE]
+
+    @property
     def clock_in_time(self) -> str:
         return self[ChartColumn.START].text
 
