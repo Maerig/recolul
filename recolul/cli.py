@@ -105,13 +105,7 @@ def _get_attendance_chart() -> AttendanceChart:
         auth_id=config.recoru_auth_id,
         password=config.recoru_password
     ) as recoru_session:
-        attendance_chart = recoru_session.get_attendance_chart()
-        # Remove rows without a work time
-        attendance_chart = [
-            row for row in attendance_chart
-            if row.clock_in_time
-        ]
-        return attendance_chart
+        return recoru_session.get_attendance_chart()
 
 
 if __name__ == "__main__":
