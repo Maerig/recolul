@@ -1,5 +1,6 @@
 import argparse
 import sys
+from datetime import datetime
 from getpass import getpass
 
 from recolul import plotting, time
@@ -105,7 +106,14 @@ def _get_attendance_chart() -> AttendanceChart:
         auth_id=config.recoru_auth_id,
         password=config.recoru_password
     ) as recoru_session:
-        return recoru_session.get_attendance_chart()
+        attendance_chart = recoru_session.get_attendance_chart()
+
+    # Exclude rows which date is in the future
+    current_day_of_month = datetime.now().day
+    return [
+        row for row in attendance_chart
+        if row.day_of_month <= current_day_of_month
+    ]
 
 
 if __name__ == "__main__":

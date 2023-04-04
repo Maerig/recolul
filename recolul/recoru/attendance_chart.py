@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 from typing import TypeAlias
 
@@ -50,6 +51,8 @@ class ChartHeader:
 
 class ChartRow:
     """Row of the attendance chart"""
+    _date_regex = re.compile(r"^(\d{1,2})\/(\d{1,2})\(.\)$")
+
     def __init__(self, header: ChartHeader, tag: Tag):
         self._header = header
         self._tag = tag
@@ -62,6 +65,13 @@ class ChartRow:
     @property
     def day(self) -> ChartEntry:
         return self[ChartColumn.DATE]
+
+    @property
+    def day_of_month(self) -> int:
+        match = ChartRow._date_regex.match(self.day.text)
+        if not match:
+            return 0
+        return int(match.group(2))
 
     @property
     def workplace(self) -> ChartEntry:
