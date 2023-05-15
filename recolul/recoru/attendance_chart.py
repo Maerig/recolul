@@ -12,6 +12,7 @@ class ChartColumn(str, Enum):
     START = "開始"
     END = "終了"
     WORK_TIME = "労働時間"
+    MEMO = "メモ"
 
 
 class ChartEntry:
@@ -88,6 +89,10 @@ class ChartRow:
     @property
     def work_time(self) -> str:
         return self[ChartColumn.WORK_TIME].text
+
+    @property
+    def memo(self) -> str:
+        return self[ChartColumn.MEMO].text
 
 
 AttendanceChart: TypeAlias = list[ChartRow]

@@ -36,7 +36,10 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
             continue
 
         days.append(day.text)
-        required_time = Duration(0 if day.color in ["blue", "red"] else 8 * 60)  # No required hours for holidays
+        if day.color in ["blue", "red"] and "swap day" not in row.memo.lower():
+            required_time = Duration(0)
+        else:
+            required_time = Duration(8 * 60)
         work_time = get_work_time(row)
         overtime_history.append(work_time - required_time)
         total_workplace_times[row.workplace.text] += work_time
