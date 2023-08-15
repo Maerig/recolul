@@ -14,7 +14,9 @@ def get_work_time(chart_row: ChartRow) -> Duration:
     if work_time := chart_row.work_time:
         return Duration.parse(work_time)
 
-    clock_in_time = Duration.parse(chart_row.clock_in_time)
+    if not (raw_clock_in_time := chart_row.clock_in_time):
+        return Duration(0)
+    clock_in_time = Duration.parse(raw_clock_in_time)
     current_work_time = Duration.now() - clock_in_time
     break_time = (
         Duration(60) if current_work_time >= _MIN_HOURS_FOR_MANDATORY_BREAK
@@ -28,21 +30,17 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
     overtime_history = []
     total_workplace_times = defaultdict(Duration)
     for row in attendance_chart:
-        if not row.clock_in_time:
-            continue
-
         day = row.day
-        if not day.text:
-            continue
-
-        days.append(day.text)
         if day.color in ["blue", "red"] and "swap day" not in row.memo.lower():
             required_time = Duration(0)
         else:
             required_time = Duration(8 * 60)
         work_time = get_work_time(row)
+        if not (required_time or work_time):
+            continue
         overtime_history.append(work_time - required_time)
         total_workplace_times[row.workplace.text] += work_time
+        days.append(day.text)
 
     return days, overtime_history, total_workplace_times
 

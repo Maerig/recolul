@@ -45,3 +45,6 @@ class Duration:
 
     def __abs__(self):
         return Duration(abs(self.minutes))
+
+    def __bool__(self):
+        return self.minutes > 0
