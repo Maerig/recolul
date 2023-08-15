@@ -1,6 +1,5 @@
 import argparse
 import sys
-from datetime import datetime
 from getpass import getpass
 
 from recolul import plotting, time
@@ -8,17 +7,20 @@ from recolul.config import Config
 from recolul.duration import Duration
 from recolul.recoru.attendance_chart import AttendanceChart
 from recolul.recoru.recoru_session import RecoruSession
-from recolul.time import get_work_time
+from recolul.time import get_work_time, until_today
 
 
 def balance(exclude_last_day: bool) -> None:
-    attendance_chart = _get_attendance_chart()
-    month = attendance_chart[:-1] if exclude_last_day else attendance_chart
-    overtime_balance, total_workplace_times = time.get_overtime_balance(month)
+    full_attendance_chart = _get_attendance_chart()
+    attendance_chart = until_today(full_attendance_chart)
+    if exclude_last_day and len(attendance_chart) > 1:
+        attendance_chart = attendance_chart[:-1]
+    overtime_balance, total_workplace_times = time.get_overtime_balance(attendance_chart)
     print(f"Monthly overtime balance: {overtime_balance}")
     print(f"Total time per workplace:")
     for workplace, total_work_time in total_workplace_times.items():
         print(f"  {workplace}: {total_work_time}")
+    print(f"Maximum WFH time this month: {Duration(60) * time.count_working_days(full_attendance_chart)}")
 
     if exclude_last_day:
         return
@@ -30,7 +32,7 @@ def balance(exclude_last_day: bool) -> None:
 
 
 def when_to_leave() -> None:
-    attendance_chart = _get_attendance_chart()
+    attendance_chart = until_today(_get_attendance_chart())
     leave_time, includes_break = time.get_leave_time(attendance_chart)
     current_time = Duration.now()
     if leave_time <= current_time:
@@ -55,7 +57,7 @@ def update_config() -> None:
 
 
 def graph(exclude_last_day: bool) -> None:
-    attendance_chart = _get_attendance_chart()
+    attendance_chart = until_today(_get_attendance_chart())
     if exclude_last_day and len(attendance_chart) > 1:
         attendance_chart = attendance_chart[:-1]
     days, history, _ = time.get_overtime_history(attendance_chart)
@@ -108,12 +110,7 @@ def _get_attendance_chart() -> AttendanceChart:
     ) as recoru_session:
         attendance_chart = recoru_session.get_attendance_chart()
 
-    # Exclude rows which date is in the future
-    current_day_of_month = datetime.now().day
-    return [
-        row for row in attendance_chart
-        if row.day_of_month <= current_day_of_month
-    ]
+    return attendance_chart
 
 
 if __name__ == "__main__":

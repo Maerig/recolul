@@ -1,9 +1,19 @@
 from collections import defaultdict
+from datetime import datetime
 
 from recolul.duration import Duration
 from recolul.recoru.attendance_chart import AttendanceChart, ChartRow
 
 _MIN_HOURS_FOR_MANDATORY_BREAK = Duration(6 * 60)
+
+
+def until_today(attendance_chart: AttendanceChart) -> AttendanceChart:
+    """Return a slice of the attendance chart that only contains rows until today"""
+    current_day_of_month = datetime.now().day
+    return [
+        row for row in attendance_chart
+        if row.day_of_month <= current_day_of_month
+    ]
 
 
 def get_work_time(chart_row: ChartRow) -> Duration:
@@ -30,8 +40,7 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
     overtime_history = []
     total_workplace_times = defaultdict(Duration)
     for row in attendance_chart:
-        day = row.day
-        if day.color in ["blue", "red"] and "swap day" not in row.memo.lower():
+        if not _is_working_day(row):
             required_time = Duration(0)
         else:
             required_time = Duration(8 * 60)
@@ -40,7 +49,7 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
             continue
         overtime_history.append(work_time - required_time)
         total_workplace_times[row.workplace.text] += work_time
-        days.append(day.text)
+        days.append(row.day.text)
 
     return days, overtime_history, total_workplace_times
 
@@ -65,3 +74,15 @@ def get_leave_time(attendance_chart: AttendanceChart) -> tuple[Duration, bool]:
         return leave_time, True
 
     return leave_time, False
+
+
+def count_working_days(attendance_chart: AttendanceChart) -> int:
+    return sum(
+        1
+        for row in attendance_chart
+        if _is_working_day(row)
+    )
+
+
+def _is_working_day(row: ChartRow) -> bool:
+    return row.day.color not in ["blue", "red"] or "swap day" in row.memo.lower()
