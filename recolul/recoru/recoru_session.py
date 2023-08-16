@@ -36,11 +36,16 @@ class RecoruSession:
         table_header = table.select_one("thead > tr", recursive=False)
         header = ChartHeader(table_header)
 
+        chart_rows = []
         table_body = table.find("tbody", recursive=False)
-        return [
-            ChartRow(header, row)
-            for row in table_body.find_all("tr", recursive=False)
-        ]
+        for row in table_body.find_all("tr", recursive=False):
+            chart_row = ChartRow(header, row)
+            if not chart_row.day.text and chart_row.clock_in_time:
+                chart_row.is_multiple_entry_row = True
+                if chart_rows:
+                    chart_rows[-1].is_multiple_entry_row = True
+            chart_rows.append(chart_row)
+        return chart_rows
 
     def _login(self):
         url = "https://app.recoru.in/ap/login"

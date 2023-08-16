@@ -21,13 +21,26 @@ def get_work_time(chart_row: ChartRow) -> Duration:
     Get work time from the column if available,
     else calculate it from clock-in time and current time
     """
-    if work_time := chart_row.work_time:
+    if not chart_row.is_multiple_entry_row and (work_time := chart_row.work_time):
         return Duration.parse(work_time)
+
+    category = chart_row.category
+    if category.startswith("Half Day Leave"):
+        return Duration(4 * 60)
+    if category.endswith(("Leave", "Leagve")):
+        return Duration(8 * 60)
 
     if not (raw_clock_in_time := chart_row.clock_in_time):
         return Duration(0)
     clock_in_time = Duration.parse(raw_clock_in_time)
-    current_work_time = Duration.now() - clock_in_time
+
+    if raw_clock_out_time := chart_row.clock_out_time:
+        clock_out_time = Duration.parse(raw_clock_out_time)
+    else:
+        # Current day
+        clock_out_time = Duration.now()
+
+    current_work_time = clock_out_time - clock_in_time
     break_time = (
         Duration(60) if current_work_time >= _MIN_HOURS_FOR_MANDATORY_BREAK
         else Duration(0)
@@ -40,6 +53,7 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
     overtime_history = []
     total_workplace_times = defaultdict(Duration)
     for row in attendance_chart:
+        day = row.day.text
         if not _is_working_day(row):
             required_time = Duration(0)
         else:
@@ -47,9 +61,16 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
         work_time = get_work_time(row)
         if not (required_time or work_time):
             continue
-        overtime_history.append(work_time - required_time)
-        total_workplace_times[row.workplace.text] += work_time
-        days.append(row.day.text)
+
+        if day:
+            days.append(day)
+            overtime_history.append(work_time - required_time)
+        else:
+            # Row with multiple entries
+            overtime_history[-1] += work_time
+
+        workplace = row.workplace or "HF Bldg."  # Workplace is empty for paid leaves
+        total_workplace_times[workplace] += work_time
 
     return days, overtime_history, total_workplace_times
 
@@ -85,4 +106,4 @@ def count_working_days(attendance_chart: AttendanceChart) -> int:
 
 
 def _is_working_day(row: ChartRow) -> bool:
-    return row.day.color not in ["blue", "red"] or "swap day" in row.memo.lower()
+    return row.day.text and row.day.color not in ["blue", "red"] or "swap day" in row.memo.lower()

@@ -58,6 +58,8 @@ class ChartRow:
         self._header = header
         self._tag = tag
 
+        self.is_multiple_entry_row: bool = False
+
     def __getitem__(self, column: ChartColumn) -> ChartEntry:
         column_index = self._header.get_column_index(column)
         column = self._tag.select_one(f"td:nth-child({column_index + 1})", recursive=False)
@@ -75,8 +77,12 @@ class ChartRow:
         return int(match.group(2))
 
     @property
-    def workplace(self) -> ChartEntry:
-        return self[ChartColumn.WORKPLACE]
+    def workplace(self) -> str:
+        return self[ChartColumn.WORKPLACE].text
+
+    @property
+    def category(self) -> str:
+        return self[ChartColumn.CATEGORY].text
 
     @property
     def clock_in_time(self) -> str:
