@@ -40,7 +40,7 @@ class RecoruSession:
         table_body = table.find("tbody", recursive=False)
         for row in table_body.find_all("tr", recursive=False):
             chart_row = ChartRow(header, row)
-            if not chart_row.day.text and chart_row.clock_in_time:
+            if not chart_row.day.text and (chart_row.clock_in_time or chart_row.category):
                 chart_row.is_multiple_entry_row = True
                 if chart_rows:
                     chart_rows[-1].is_multiple_entry_row = True
