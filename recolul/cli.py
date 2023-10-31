@@ -2,7 +2,7 @@ import argparse
 import sys
 from getpass import getpass
 
-from recolul import plotting, time
+from recolul import __version__, plotting, time
 from recolul.config import Config
 from recolul.duration import Duration
 from recolul.recoru.attendance_chart import AttendanceChart
@@ -66,6 +66,7 @@ def graph(exclude_last_day: bool) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(prog="recolul")
+    parser.add_argument("-v", "--version", action="version", version=__version__)
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     balance_parser = subparsers.add_parser("balance", help="Calculate overtime balance")
