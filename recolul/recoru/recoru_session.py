@@ -30,7 +30,29 @@ class RecoruSession:
 
         response = self.session.post("https://app.recoru.in/ap/home/loadAttendanceChartGadget")
         response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
+        return self._parse_attendance_chart(response.text)
+
+    @classmethod
+    def read_attendance_chart_file(cls, path: str) -> AttendanceChart:
+        """Used for testing"""
+
+        with open(path, "rt") as attendance_chart_file:
+            text = attendance_chart_file.read()
+        return cls._parse_attendance_chart(text)
+
+    def _login(self):
+        url = "https://app.recoru.in/ap/login"
+        form_data = {
+            "contractId": self._contract_id,
+            "authId": self._auth_id,
+            "password": self._password
+        }
+        response = self.session.post(url, data=form_data)
+        response.raise_for_status()
+
+    @staticmethod
+    def _parse_attendance_chart(text: str) -> AttendanceChart:
+        soup = BeautifulSoup(text, "html.parser")
         table = soup.select_one("#ID-attendanceChartGadgetTable")
 
         table_header = table.select_one("thead > tr", recursive=False)
@@ -46,13 +68,3 @@ class RecoruSession:
                     chart_rows[-1].is_multiple_entry_row = True
             chart_rows.append(chart_row)
         return chart_rows
-
-    def _login(self):
-        url = "https://app.recoru.in/ap/login"
-        form_data = {
-            "contractId": self._contract_id,
-            "authId": self._auth_id,
-            "password": self._password
-        }
-        response = self.session.post(url, data=form_data)
-        response.raise_for_status()
