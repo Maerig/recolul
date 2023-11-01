@@ -5,9 +5,10 @@ from getpass import getpass
 from recolul import __version__, plotting, time
 from recolul.config import Config
 from recolul.duration import Duration
+from recolul.errors import NoClockInError
 from recolul.recoru.attendance_chart import AttendanceChart
 from recolul.recoru.recoru_session import RecoruSession
-from recolul.time import get_work_time, until_today
+from recolul.time import get_entry_work_time, get_row_work_time, until_today
 
 
 def balance(exclude_last_day: bool) -> None:
@@ -27,13 +28,18 @@ def balance(exclude_last_day: bool) -> None:
 
     last_day = attendance_chart[-1]
     print(f"\nLast day {last_day.day.text}")
-    print(f"  Clock-in: {last_day.clock_in_time}")
-    print(f"  Working hours: {get_work_time(last_day)}")
+    print(f"  Clock-in: {max(entry.clock_in_time for entry in last_day.entries)}")
+    print(f"  Working hours: {get_row_work_time(last_day)}")
 
 
 def when_to_leave() -> None:
     attendance_chart = until_today(_get_attendance_chart())
-    leave_time, includes_break = time.get_leave_time(attendance_chart)
+    try:
+        leave_time, includes_break = time.get_leave_time(attendance_chart)
+    except NoClockInError:
+        print("You have already clocked out.")
+        return
+
     current_time = Duration.now()
     if leave_time <= current_time:
         print("Leave today as early as you like.")

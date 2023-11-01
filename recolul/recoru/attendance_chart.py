@@ -15,7 +15,22 @@ class ChartColumn(str, Enum):
     MEMO = "メモ"
 
 
-class ChartEntry:
+class ChartHeader:
+    """Header of the attendance chart"""
+    def __init__(self, tag: Tag):
+        self._column_indices: dict[ChartColumn, int] = {
+            ChartCell(column).text.strip(): i
+            for i, column in enumerate(tag.find_all("td", recursive=False))
+        }
+
+    def get_column_index(self, column: ChartColumn) -> int:
+        return self._column_indices[column]
+
+    def has_column(self, column: ChartColumn) -> bool:
+        return column in self._column_indices
+
+
+class ChartCell:
     """Single cell of the attendance chart"""
     def __init__(self, tag: Tag):
         self._tag = tag
@@ -35,46 +50,20 @@ class ChartEntry:
             .removesuffix(";")
 
 
-class ChartHeader:
-    """Header of the attendance chart"""
-    def __init__(self, tag: Tag):
-        self._column_indices: dict[ChartColumn, int] = {
-            ChartEntry(column).text.strip(): i
-            for i, column in enumerate(tag.find_all("td", recursive=False))
-        }
-
-    def get_column_index(self, column: ChartColumn) -> int:
-        return self._column_indices[column]
-
-    def has_column(self, column: ChartColumn) -> bool:
-        return column in self._column_indices
-
-
-class ChartRow:
-    """Row of the attendance chart"""
-    _date_regex = re.compile(r"^(\d{1,2})\/(\d{1,2})\(.\)$")
-
+class ChartRowEntry:
+    """Sub-row of the attendance chart"""
     def __init__(self, header: ChartHeader, tag: Tag):
         self._header = header
         self._tag = tag
 
-        self.is_multiple_entry_row: bool = False
-
-    def __getitem__(self, column: ChartColumn) -> ChartEntry:
+    def __getitem__(self, column: ChartColumn) -> ChartCell:
         column_index = self._header.get_column_index(column)
         column = self._tag.select_one(f"td:nth-child({column_index + 1})", recursive=False)
-        return ChartEntry(column)
+        return ChartCell(column)
 
     @property
-    def day(self) -> ChartEntry:
+    def day(self) -> ChartCell:
         return self[ChartColumn.DATE]
-
-    @property
-    def day_of_month(self) -> int:
-        match = ChartRow._date_regex.match(self.day.text)
-        if not match:
-            return 0
-        return int(match.group(2))
 
     @property
     def workplace(self) -> str:
@@ -99,6 +88,34 @@ class ChartRow:
     @property
     def memo(self) -> str:
         return self[ChartColumn.MEMO].text
+
+
+class ChartRow:
+    """Row of the attendance chart"""
+    _date_regex = re.compile(r"^(\d{1,2})\/(\d{1,2})\(.\)$")
+
+    def __init__(self, entries: list[ChartRowEntry]):
+        assert entries, "Empty ChartRow"
+        self._entries = entries
+
+    @property
+    def entries(self) -> list[ChartRowEntry]:
+        return self._entries
+
+    @property
+    def day(self) -> ChartCell:
+        return self._entries[0][ChartColumn.DATE]
+
+    @property
+    def day_of_month(self) -> int:
+        match = ChartRow._date_regex.match(self._entries[0].day.text)
+        if not match:
+            return 0
+        return int(match.group(2))
+
+    @property
+    def memo(self) -> str:
+        return self._entries[0][ChartColumn.MEMO].text
 
 
 AttendanceChart: TypeAlias = list[ChartRow]

@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-from recolul.recoru.attendance_chart import AttendanceChart, ChartHeader, ChartRow
+from recolul.recoru.attendance_chart import AttendanceChart, ChartHeader, ChartRow, ChartRowEntry
 
 
 class RecoruSession:
@@ -59,12 +59,17 @@ class RecoruSession:
         header = ChartHeader(table_header)
 
         chart_rows = []
+        current_row_entries = []
         table_body = table.find("tbody", recursive=False)
         for row in table_body.find_all("tr", recursive=False):
-            chart_row = ChartRow(header, row)
-            if not chart_row.day.text and (chart_row.clock_in_time or chart_row.category):
-                chart_row.is_multiple_entry_row = True
-                if chart_rows:
-                    chart_rows[-1].is_multiple_entry_row = True
-            chart_rows.append(chart_row)
+            entry = ChartRowEntry(header, row)
+            if entry.day.text:  # New row
+                # Append previous row
+                if current_row_entries:
+                    chart_rows.append(ChartRow(current_row_entries))
+                current_row_entries = [entry]
+            else:  # Row with multiple entries
+                current_row_entries.append(entry)
+        if current_row_entries:
+            chart_rows.append(ChartRow(current_row_entries))
         return chart_rows
