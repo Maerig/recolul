@@ -22,11 +22,20 @@ class Duration:
 
     __str__ = __repr__
 
+    def __eq__(self, other):
+        return self.minutes == other.minutes
+
+    def __neq__(self, other):
+        return self.minutes != other.minutes
+
     def __add__(self, other):
         return Duration(self.minutes + other.minutes)
 
     def __sub__(self, other):
         return Duration(self.minutes - other.minutes)
+
+    def __neg__(self):
+        return Duration(-self.minutes)
 
     def __mul__(self, other):
         return Duration(other * self.minutes)

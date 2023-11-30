@@ -1,0 +1,498 @@
+<table id="ID-attendanceChartGadgetTable" class="h-tbl-attendanceChartGadget">
+        <thead>
+          <tr>
+                  <td class="item-day">日付</td>
+                  <td class="item-workPlace">作業場所</td>
+                  <td class="item-attendKbn">勤務区分</td>
+                  <td class="item-worktimeStart">開始</td>
+                  <td class="item-worktimeEnd">終了</td>
+                  <td class="item-breaktime">休憩時間</td>
+                  <td class="item-yukyutime">時間有休</td>
+                  <td class="item-standardWorkTime">所定内労働</td>
+                  <td class="item-workTime">労働時間</td>
+                  <td class="item-actualWorkTime">実労働時間</td>
+                  <td class="item-outsideTime">時間外</td>
+                  <td class="item-legalInsideTime">法定内残業</td>
+                  <td class="item-legalOutsideTime">法定外残業</td>
+                  <td class="item-worktimeNight">深夜</td>
+                  <td class="item-worktimeRegularHoliday">所定休日</td>
+                  <td class="item-worktimeRegularHolidayNight">所定休日深夜</td>
+                  <td class="item-worktimeLegalHoliday">法定休日</td>
+                  <td class="item-worktimeLegalHolidayNight">法定休日深夜</td>
+                  <td class="item-worktimeMemo">メモ</td>
+                  <td class="item-summaryItem">HF Bldg.</td>
+                  <td class="item-summaryItem">WFH</td>
+          </tr>
+        </thead>
+        <tbody>
+            <tr class=" " onclick="loadAttendanceEditDialog('233','20231119','1', 'false');">
+                        <td class="item-day item" style="border-bottom: none;">
+                            <label style="color: red;">11/19(日)</label>
+                        </td>
+                        <td class="item-workPlace"></td>
+                        <td class="item-attendKbn " title=""></td>
+                        <td class="item-worktimeStart  " title="">
+                        </td>
+                        <td class="item-worktimeEnd  " title="">
+                        </td>
+                        <td class="item-breaktime " title="">
+                          <label style="vertical-align: middle;"></label>
+                        </td>
+                        <td class="item-yukyutime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-standardWorkTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-workTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-actualWorkTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-outsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-legalInsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-legalOutsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeRegularHoliday" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeRegularHolidayNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeLegalHoliday" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeLegalHolidayNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeMemo">
+                          <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                        </td>
+                        <td class="item-summaryItem" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-summaryItem" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('233','20231120','1', 'false');">
+                        <td class="item-day item" style="border-bottom: none;">
+                            <label style="color: #666;">11/20(月)</label>
+                        </td>
+                        <td class="item-workPlace item">HF Bldg.</td>
+                        <td class="item-attendKbn item " title="">Attendance/Work</td>
+                        <td class="item-worktimeStart item  " title="">
+                          08:45
+                        </td>
+                        <td class="item-worktimeEnd item  " title="">
+                          17:59
+                        </td>
+                        <td class="item-breaktime item " title="">
+                          <label style="vertical-align: middle;">01:00</label>
+                        </td>
+                        <td class="item-yukyutime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-standardWorkTime item" style="border-bottom: none;">
+                          <label>08:00</label>
+                        </td>
+                        <td class="item-workTime item" style="border-bottom: none;">
+                          <label>08:14</label>
+                        </td>
+                        <td class="item-actualWorkTime item" style="border-bottom: none;">
+                          <label>08:14</label>
+                        </td>
+                        <td class="item-outsideTime item" style="border-bottom: none;">
+                          <label>00:14</label>
+                        </td>
+                        <td class="item-legalInsideTime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-legalOutsideTime item" style="border-bottom: none;">
+                          <label>00:14</label>
+                        </td>
+                        <td class="item-worktimeNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeRegularHoliday item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeRegularHolidayNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeLegalHoliday item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeLegalHolidayNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeMemo">
+                          <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                        </td>
+                        <td class="item-summaryItem item" style="border-bottom: none;">
+                          <label>08:14</label>
+                        </td>
+                        <td class="item-summaryItem item" style="border-bottom: none;">
+                          <label>08:14</label>
+                        </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('233','20231121','1', 'false');">
+                        <td class="item-day item" style="border-bottom: none;">
+                            <label style="color: #666;">11/21(火)</label>
+                        </td>
+                        <td class="item-workPlace item">HF Bldg.</td>
+                        <td class="item-attendKbn item " title="">Attendance/Work</td>
+                        <td class="item-worktimeStart item  " title="">
+                          08:52
+                        </td>
+                        <td class="item-worktimeEnd item  " title="">
+                          18:00
+                        </td>
+                        <td class="item-breaktime item " title="">
+                          <label style="vertical-align: middle;">01:00</label>
+                        </td>
+                        <td class="item-yukyutime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-standardWorkTime item" style="border-bottom: none;">
+                          <label>08:00</label>
+                        </td>
+                        <td class="item-workTime item" style="border-bottom: none;">
+                          <label>08:08</label>
+                        </td>
+                        <td class="item-actualWorkTime item" style="border-bottom: none;">
+                          <label>08:08</label>
+                        </td>
+                        <td class="item-outsideTime item" style="border-bottom: none;">
+                          <label>00:08</label>
+                        </td>
+                        <td class="item-legalInsideTime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-legalOutsideTime item" style="border-bottom: none;">
+                          <label>00:08</label>
+                        </td>
+                        <td class="item-worktimeNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeRegularHoliday item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeRegularHolidayNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeLegalHoliday item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeLegalHolidayNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeMemo">
+                          <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                        </td>
+                        <td class="item-summaryItem item" style="border-bottom: none;">
+                          <label>08:08</label>
+                        </td>
+                        <td class="item-summaryItem item" style="border-bottom: none;">
+                          <label>08:08</label>
+                        </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('233','20231122','1', 'false');">
+                        <td class="item-day item" style="border-bottom: none;">
+                            <label style="color: #666;">11/22(水)</label>
+                        </td>
+                        <td class="item-workPlace"></td>
+                        <td class="item-attendKbn " title=""></td>
+                        <td class="item-worktimeStart  " title="">
+                        </td>
+                        <td class="item-worktimeEnd  " title="">
+                        </td>
+                        <td class="item-breaktime " title="">
+                          <label style="vertical-align: middle;"></label>
+                        </td>
+                        <td class="item-yukyutime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-standardWorkTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-workTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-actualWorkTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-outsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-legalInsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-legalOutsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeRegularHoliday" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeRegularHolidayNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeLegalHoliday" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeLegalHolidayNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeMemo">
+                          <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                        </td>
+                        <td class="item-summaryItem" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-summaryItem" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('233','20231123','1', 'false');">
+                        <td class="item-day item" style="border-bottom: none;">
+                            <label style="color: red;">11/23(木)</label>
+                        </td>
+                        <td class="item-workPlace"></td>
+                        <td class="item-attendKbn " title=""></td>
+                        <td class="item-worktimeStart  " title="">
+                        </td>
+                        <td class="item-worktimeEnd  " title="">
+                        </td>
+                        <td class="item-breaktime " title="">
+                          <label style="vertical-align: middle;"></label>
+                        </td>
+                        <td class="item-yukyutime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-standardWorkTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-workTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-actualWorkTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-outsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-legalInsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-legalOutsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeRegularHoliday" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeRegularHolidayNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeLegalHoliday" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeLegalHolidayNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeMemo">
+                          <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                        </td>
+                        <td class="item-summaryItem" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-summaryItem" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('233','20231124','1', 'false');">
+                        <td class="item-day item" style="border-bottom: none;">
+                            <label style="color: #666;">11/24(金)</label>
+                        </td>
+                        <td class="item-workPlace"></td>
+                        <td class="item-attendKbn item " title="">Paid Leave</td>
+                        <td class="item-worktimeStart  " title="">
+                        </td>
+                        <td class="item-worktimeEnd  " title="">
+                        </td>
+                        <td class="item-breaktime item " title="">
+                          <label style="vertical-align: middle;">00:00</label>
+                        </td>
+                        <td class="item-yukyutime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-standardWorkTime item" style="border-bottom: none;">
+                          <label>08:00</label>
+                        </td>
+                        <td class="item-workTime item" style="border-bottom: none;">
+                          <label>08:00</label>
+                        </td>
+                        <td class="item-actualWorkTime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-outsideTime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-legalInsideTime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-legalOutsideTime item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeRegularHoliday item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeRegularHolidayNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeLegalHoliday item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeLegalHolidayNight item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-worktimeMemo">
+                          <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                        </td>
+                        <td class="item-summaryItem item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+                        <td class="item-summaryItem item" style="border-bottom: none;">
+                          <label>00:00</label>
+                        </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('233','20231125','1', 'false');">
+                        <td class="item-day item" style="border-bottom: none;">
+                            <label style="color: blue;">11/25(土)</label>
+                        </td>
+                        <td class="item-workPlace"></td>
+                        <td class="item-attendKbn " title=""></td>
+                        <td class="item-worktimeStart  " title="">
+                        </td>
+                        <td class="item-worktimeEnd  " title="">
+                        </td>
+                        <td class="item-breaktime " title="">
+                          <label style="vertical-align: middle;"></label>
+                        </td>
+                        <td class="item-yukyutime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-standardWorkTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-workTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-actualWorkTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-outsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-legalInsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-legalOutsideTime" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeRegularHoliday" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeRegularHolidayNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeLegalHoliday" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeLegalHolidayNight" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-worktimeMemo">
+                          <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                        </td>
+                        <td class="item-summaryItem" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+                        <td class="item-summaryItem" style="border-bottom: none;">
+                          <label></label>
+                        </td>
+            </tr>
+        </tbody>
+        <tfoot>
+          <tr class="footer header" style="height: 30px; background-color: #F0F0F0;">
+                  <td class="item-total">合計</td>
+                  <td class="item-workPlace"></td>
+                  <td class="item-attendKbn"></td>
+                  <td class="item-worktimeStart"></td>
+                  <td class="item-worktimeEnd item">所定時間</td>
+                  <td class="item-breaktime item">休憩時間</td>
+                  <td class="item-yukyutime item">時間有休</td>
+                  <td class="item-standardWorkTime item">所定内労働</td>
+                  <td class="item-workTime item">労働時間</td>
+                  <td class="item-actualWorkTime item">実労働時間</td>
+                  <td class="item-outsideTime item" colspan="1">時間外</td>
+                  <td class="item-legalInsideTime item">法定内残業</td>
+                  <td class="item-legalOutsideTime item" colspan="1">法定外残業</td>
+                  <td class="item-worktimeNight item">深夜</td>
+                  <td class="item-worktimeRegularHoliday item">所定休日</td>
+                  <td class="item-worktimeRegularHolidayNight item">所定休日深夜</td>
+                  <td class="item-worktimeLegalHoliday item">法定休日</td>
+                  <td class="item-worktimeLegalHolidayNight item">法定休日深夜</td>
+                  <td class="item-worktimeMemo"></td>
+                  <td class="item-summaryItem item">HF Bldg.</td>
+                  <td class="item-summaryItem item">WFH</td>
+          </tr>
+          <tr class="footer">
+                  <td class="item-total"></td>
+                  <td class="item-workPlace"></td>
+                  <td class="item-attendKbn"></td>
+                  <td class="item-worktimeStart"></td>
+                  <td class="item-worktimeEnd item">160:00</td>
+                  <td class="item-breaktime item">17:00</td>
+                  <td class="item-yukyutime item">00:00</td>
+                  <td class="item-standardWorkTime item">140:30</td>
+                  <td class="item-workTime item">151:42</td>
+                  <td class="item-actualWorkTime item">143:42</td>
+                  <td class="item-outsideTime item" colspan="1" style="color:#; background-color:#;">
+                    07:42
+                  </td>
+                  <td class="item-legalInsideTime item">00:00</td>
+                  <td class="item-legalOutsideTime item" colspan="1" style="color:#; background-color:#;">
+                    11:12
+                  </td>
+                  <td class="item-worktimeNight item">00:00</td>
+                  <td class="item-worktimeRegularHoliday item">00:00</td>
+                  <td class="item-worktimeRegularHolidayNight item">00:00</td>
+                  <td class="item-worktimeLegalHoliday item">00:00</td>
+                  <td class="item-worktimeLegalHolidayNight item">00:00</td>
+                  <td class="item-worktimeMemo"></td>
+                  <td class="item-summaryItem item">143:42</td>
+                  <td class="item-summaryItem item">143:42</td>
+          </tr>
+        </tfoot>
+      </table>
