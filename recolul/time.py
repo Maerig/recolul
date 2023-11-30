@@ -74,9 +74,6 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
             workplace = entry.workplace or "HF Bldg."  # Workplace is empty for paid leaves
             total_workplace_times[workplace] += entry_work_time
 
-        if not row_work_time:
-            continue
-
         days.append(day)
         overtime_history.append(row_work_time - required_time)
 
