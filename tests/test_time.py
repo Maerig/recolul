@@ -48,3 +48,19 @@ def test_get_overtime_history_no_work_time():
     assert total_workplace_times == {
         "HF Bldg.": Duration.parse("08:14") + Duration.parse("08:08") + Duration.parse("08:00")
     }
+
+
+def test_get_overtime_history_worked_holiday():
+    chart = load_mock_attendance_chart("worked_holiday.html")
+    days, overtime_history, total_workplace_times = get_overtime_history(chart)
+    assert days == ["11/20(月)", "11/21(火)", "11/22(水)", "11/23(木)", "11/24(金)"]
+    assert overtime_history == [-Duration(2), Duration(17), Duration(19), Duration.parse("03:23"), Duration(4)]
+    assert total_workplace_times == {
+        "HF Bldg.": (
+            Duration.parse("07:58") +
+            Duration.parse("08:17") +
+            Duration.parse("08:19") +
+            Duration.parse("08:04")
+        ),
+        "WFH": Duration.parse("03:23")
+    }
