@@ -64,3 +64,14 @@ def test_get_overtime_history_worked_holiday():
         ),
         "WFH": Duration.parse("03:23")
     }
+
+
+def test_clock_out_after_midnight():
+    chart = load_mock_attendance_chart("clock_out_after_midnight.html")
+    days, overtime_history, total_workplace_times = get_overtime_history(chart)
+    assert days == ["12/1(金)", "12/2(土)", "12/3(日)"]
+    assert overtime_history == [Duration.parse("06:11"), Duration.parse("03:00"), Duration.parse("02:17")]
+    assert total_workplace_times == {
+        "HF Bldg.": Duration.parse("08:12"),
+        "WFH": Duration.parse("05:59") + Duration.parse("03:00") + Duration.parse("02:17")
+    }

@@ -38,6 +38,10 @@ def get_entry_work_time(entry: ChartRowEntry) -> Duration:
         # Current day
         clock_out_time = Duration.now()
 
+    if clock_out_time < clock_in_time:
+        # After midnight
+        clock_out_time += Duration(24 * 60)
+
     work_time = clock_out_time - clock_in_time
     break_time = (
         Duration(60) if work_time >= _MIN_HOURS_FOR_MANDATORY_BREAK

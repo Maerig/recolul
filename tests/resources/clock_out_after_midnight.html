@@ -1,0 +1,591 @@
+<div id="ACG" class="h-gadget h-attendanceChartGadget" style="display: block; max-width: 1526.83px;">
+    <form id="attendanceChartGadgetForm" action="/ap/home/loadAttendanceChartGadget" method="post">
+        <input id="periodPoint" name="periodPoint" class="form_params" type="hidden" value="0">
+        <div class="h-gadget-header h-attendanceChartGadgetHeader">
+            <div class="common-select" style="width: 260px; margin-top: -2px; margin-left:5px; float:left;">
+                <select id="periodPoint" name="periodPoint" class="period-list"
+                        onchange="$('#periodPoint').val($(this).find('option:selected').val()); refreshAttendanceChartGadget();">
+                    <option value="-6">2023年6月1日～2023年6月30日</option>
+                    <option value="-5">2023年7月1日～2023年7月31日</option>
+                    <option value="-4">2023年8月1日～2023年8月31日</option>
+                    <option value="-3">2023年9月1日～2023年9月30日</option>
+                    <option value="-2">2023年10月1日～2023年10月31日</option>
+                    <option value="-1">2023年11月1日～2023年11月30日</option>
+                    <option value="0" selected="selected">2023年12月1日～2023年12月31日</option>
+                    <option value="1">2024年1月1日～2024年1月31日</option>
+                    <option value="2">2024年2月1日～2024年2月29日</option>
+                    <option value="3">2024年3月1日～2024年3月31日</option>
+                    <option value="4">2024年4月1日～2024年4月30日</option>
+                    <option value="5">2024年5月1日～2024年5月31日</option>
+                    <option value="6">2024年6月1日～2024年6月30日</option>
+                </select>
+            </div>
+            <a href="#" class="link" onclick="refreshAttendanceChartGadget(-1); return false;"
+               style="color: #FFF; float:left; margin-left:15px;">&lt;&nbsp;前月へ</a>
+            <a href="#" class="link" onclick="refreshAttendanceChartGadget(+1); return false;"
+               style="color: #FFF; float:left; margin-left:15px;">翌月へ&nbsp;&gt;</a>
+            <label style="float:right; margin-right: 5px;">
+                <a href="/ap/menuAttendance/?ui=36&amp;pp=0" class="link icon-f16 icon-search-white"
+                   style="color: #FFF;">勤務表の編集</a>
+            </label>
+        </div>
+        <table id="ID-attendanceChartGadgetTable" class="h-tbl-attendanceChartGadget">
+            <thead>
+            <tr>
+                <td class="item-day">日付</td>
+                <td class="item-workPlace">作業場所</td>
+                <td class="item-attendKbn">勤務区分</td>
+                <td class="item-worktimeStart">開始</td>
+                <td class="item-worktimeEnd">終了</td>
+                <td class="item-breaktime">休憩時間</td>
+                <td class="item-yukyutime">時間有休</td>
+                <td class="item-standardWorkTime">所定内労働</td>
+                <td class="item-workTime">労働時間</td>
+                <td class="item-actualWorkTime">実労働時間</td>
+                <td class="item-outsideTime">時間外</td>
+                <td class="item-legalInsideTime">法定内残業</td>
+                <td class="item-legalOutsideTime">法定外残業</td>
+                <td class="item-worktimeNight">深夜</td>
+                <td class="item-worktimeRegularHoliday">所定休日</td>
+                <td class="item-worktimeRegularHolidayNight">所定休日深夜</td>
+                <td class="item-worktimeLegalHoliday">法定休日</td>
+                <td class="item-worktimeLegalHolidayNight">法定休日深夜</td>
+                <td class="item-worktimeMemo">メモ</td>
+                <td class="item-summaryItem">HF Bldg.</td>
+                <td class="item-summaryItem">WFH</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class=" " onclick="loadAttendanceEditDialog('36','20231201','1', 'false');">
+                <td class="item-day item" style="border-bottom: none;">
+                    <label style="color: #666;">12/1(金)</label>
+                </td>
+                <td class="item-workPlace item">HF Bldg.</td>
+                <td class="item-attendKbn item " title="">Attendance/Work</td>
+                <td class="item-worktimeStart item  " title="">
+                    08:24
+                </td>
+                <td class="item-worktimeEnd item  " title="">
+                    17:36
+                </td>
+                <td class="item-breaktime item " title="">
+                    <label style="vertical-align: middle;">01:00</label>
+                </td>
+                <td class="item-yukyutime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-standardWorkTime item" style="border-bottom: none;">
+                    <label>08:00</label>
+                </td>
+                <td class="item-workTime item" style="border-bottom: none;">
+                    <label>14:11</label>
+                </td>
+                <td class="item-actualWorkTime item" style="border-bottom: none;">
+                    <label>14:11</label>
+                </td>
+                <td class="item-outsideTime item" style="border-bottom: none;">
+                    <label>06:11</label>
+                </td>
+                <td class="item-legalInsideTime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-legalOutsideTime item" style="border-bottom: none;">
+                    <label>06:11</label>
+                </td>
+                <td class="item-worktimeNight item" style="border-bottom: none;">
+                    <label>02:29</label>
+                </td>
+                <td class="item-worktimeRegularHoliday item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeRegularHolidayNight item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeLegalHoliday item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeLegalHolidayNight item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeMemo">
+                    <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                </td>
+                <td class="item-summaryItem item" style="border-bottom: none;">
+                    <label>14:11</label>
+                </td>
+                <td class="item-summaryItem item" style="border-bottom: none;">
+                    <label>14:11</label>
+                </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('36','20231201','2', 'false');">
+                <td class="item-day item" style="border-top: none; border-bottom: none;">
+                </td>
+                <td class="item-workPlace item">WFH</td>
+                <td class="item-attendKbn item " title="">Attendance/Work</td>
+                <td class="item-worktimeStart item  edited" title="">
+                    18:30
+                </td>
+                <td class="item-worktimeEnd item  edited" title="">
+                    00:29
+                </td>
+                <td class="item-breaktime item " title="">
+                    <label style="vertical-align: middle;">00:00</label>
+                </td>
+                <td class="item-yukyutime item" style="border-top: none; border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-standardWorkTime" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-workTime" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-actualWorkTime" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-outsideTime" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-legalInsideTime" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-legalOutsideTime" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-worktimeNight" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-worktimeRegularHoliday" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-worktimeRegularHolidayNight" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-worktimeLegalHoliday" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-worktimeLegalHolidayNight" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-worktimeMemo">
+                    <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                </td>
+                <td class="item-summaryItem" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+                <td class="item-summaryItem" style="border-top: none; border-bottom: none;">
+                    <label></label>
+                </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('36','20231202','1', 'false');">
+                <td class="item-day item" style="border-bottom: none;">
+                    <label style="color: blue;">12/2(土)</label>
+                </td>
+                <td class="item-workPlace item">WFH</td>
+                <td class="item-attendKbn item " title="">Attendance/Work</td>
+                <td class="item-worktimeStart item  edited" title="">
+                    06:23
+                </td>
+                <td class="item-worktimeEnd item  " title="">
+                    09:23
+                </td>
+                <td class="item-breaktime item " title="">
+                    <label style="vertical-align: middle;">00:00</label>
+                </td>
+                <td class="item-yukyutime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-standardWorkTime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-workTime item" style="border-bottom: none;">
+                    <label>03:00</label>
+                </td>
+                <td class="item-actualWorkTime item" style="border-bottom: none;">
+                    <label>03:00</label>
+                </td>
+                <td class="item-outsideTime item" style="border-bottom: none;">
+                    <label>03:00</label>
+                </td>
+                <td class="item-legalInsideTime item" style="border-bottom: none;">
+                    <label>03:00</label>
+                </td>
+                <td class="item-legalOutsideTime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeNight item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeRegularHoliday item" style="border-bottom: none;">
+                    <label>03:00</label>
+                </td>
+                <td class="item-worktimeRegularHolidayNight item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeLegalHoliday item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeLegalHolidayNight item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeMemo">
+                    <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                </td>
+                <td class="item-summaryItem item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-summaryItem item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+            </tr>
+            <tr class=" " onclick="loadAttendanceEditDialog('36','20231203','1', 'false');">
+                <td class="item-day item" style="border-bottom: none;">
+                    <label style="color: red;">12/3(日)</label>
+                </td>
+                <td class="item-workPlace item">WFH</td>
+                <td class="item-attendKbn item " title="">Attendance/Work</td>
+                <td class="item-worktimeStart item  edited" title="">
+                    13:00
+                </td>
+                <td class="item-worktimeEnd item  " title="">
+                    15:17
+                </td>
+                <td class="item-breaktime item " title="">
+                    <label style="vertical-align: middle;">00:00</label>
+                </td>
+                <td class="item-yukyutime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-standardWorkTime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-workTime item" style="border-bottom: none;">
+                    <label>02:17</label>
+                </td>
+                <td class="item-actualWorkTime item" style="border-bottom: none;">
+                    <label>02:17</label>
+                </td>
+                <td class="item-outsideTime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-legalInsideTime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-legalOutsideTime item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeNight item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeRegularHoliday item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeRegularHolidayNight item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeLegalHoliday item" style="border-bottom: none;">
+                    <label>02:17</label>
+                </td>
+                <td class="item-worktimeLegalHolidayNight item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-worktimeMemo">
+                    <div class="custom-scrollbar" style="max-height: 70px;"></div>
+                </td>
+                <td class="item-summaryItem item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+                <td class="item-summaryItem item" style="border-bottom: none;">
+                    <label>00:00</label>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr class="footer header" style="height: 30px; background-color: #F0F0F0;">
+                <td class="item-total">合計</td>
+                <td class="item-workPlace"></td>
+                <td class="item-attendKbn"></td>
+                <td class="item-worktimeStart"></td>
+                <td class="item-worktimeEnd item">所定時間</td>
+                <td class="item-breaktime item">休憩時間</td>
+                <td class="item-yukyutime item">時間有休</td>
+                <td class="item-standardWorkTime item">所定内労働</td>
+                <td class="item-workTime item">労働時間</td>
+                <td class="item-actualWorkTime item">実労働時間</td>
+                <td class="item-outsideTime item" colspan="1">時間外</td>
+                <td class="item-legalInsideTime item">法定内残業</td>
+                <td class="item-legalOutsideTime item" colspan="1">法定外残業</td>
+                <td class="item-worktimeNight item">深夜</td>
+                <td class="item-worktimeRegularHoliday item">所定休日</td>
+                <td class="item-worktimeRegularHolidayNight item">所定休日深夜</td>
+                <td class="item-worktimeLegalHoliday item">法定休日</td>
+                <td class="item-worktimeLegalHolidayNight item">法定休日深夜</td>
+                <td class="item-worktimeMemo"></td>
+                <td class="item-summaryItem item">HF Bldg.</td>
+                <td class="item-summaryItem item">WFH</td>
+            </tr>
+            <tr class="footer">
+                <td class="item-total"></td>
+                <td class="item-workPlace"></td>
+                <td class="item-attendKbn"></td>
+                <td class="item-worktimeStart"></td>
+                <td class="item-worktimeEnd item">160:00</td>
+                <td class="item-breaktime item">03:00</td>
+                <td class="item-yukyutime item">00:00</td>
+                <td class="item-standardWorkTime item">22:53</td>
+                <td class="item-workTime item">34:21</td>
+                <td class="item-actualWorkTime item">34:21</td>
+                <td class="item-outsideTime item" colspan="1" style="color:#; background-color:#;">
+                    08:04
+                </td>
+                <td class="item-legalInsideTime item">03:00</td>
+                <td class="item-legalOutsideTime item" colspan="1" style="color:#; background-color:#;">
+                    06:11
+                </td>
+                <td class="item-worktimeNight item">02:29</td>
+                <td class="item-worktimeRegularHoliday item">03:00</td>
+                <td class="item-worktimeRegularHolidayNight item">00:00</td>
+                <td class="item-worktimeLegalHoliday item">02:17</td>
+                <td class="item-worktimeLegalHolidayNight item">00:00</td>
+                <td class="item-worktimeMemo"></td>
+                <td class="item-summaryItem item">29:04</td>
+                <td class="item-summaryItem item">29:04</td>
+            </tr>
+            </tfoot>
+        </table>
+        <div class="h-attendanceChart-summary-wrapper" style="border-top: none;">
+            <div class="h-attendanceChart-summary-title">
+                勤務時間項目
+            </div>
+            <div id="AC_SUMMARY_1" class="h-attendanceChart-summary-flex-wrapper">
+                <div class="h-attendanceChart-summary-flex">
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">所定時間</div>
+                        <div class="data">160:00</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">所定内労働</div>
+                        <div class="data">22:53</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">労働時間</div>
+                        <div class="data">34:21</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">実労働時間</div>
+                        <div class="data">34:21</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">休憩時間</div>
+                        <div class="data">03:00</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">時間外</div>
+                        <div class="data" style="color:#; font-weight:">08:04</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">時間外見込み</div>
+                        <div class="data" style="color:#; font-weight:">13:21</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">法定内残業</div>
+                        <div class="data">03:00</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">法定外残業</div>
+                        <div class="data" style="color:#; font-weight:">06:11</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">深夜</div>
+                        <div class="data">02:29</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">所定休日</div>
+                        <div class="data">03:00</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">所定休日深夜</div>
+                        <div class="data">00:00</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">法定休日</div>
+                        <div class="data">02:17</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">法定休日深夜</div>
+                        <div class="data">00:00</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">HF Bldg.</div>
+                        <div class="data">29:04</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">WFH</div>
+                        <div class="data">29:04</div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-attendanceChart-summary-title">
+                勤務日数・休暇項目
+            </div>
+            <div id="AC_SUMMARY_2" class="h-attendanceChart-summary-flex-wrapper" style="">
+                <div class="h-attendanceChart-summary-flex">
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">所定出勤日</div>
+                        <div class="data">20.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">出勤日数</div>
+                        <div class="data">6.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">所休出勤日数</div>
+                        <div class="data">1.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">法休出勤日数</div>
+                        <div class="data">1.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">有休取得日数</div>
+                        <div class="data">0.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">時間有休</div>
+                        <div class="data">00:00</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">有休残り日数</div>
+                        <div class="data">23.5日
+                            <a class="ow btn-edit tip" style="margin-top: -3px; margin-left: 0px;">
+                                <img src="/ap/assets/common/images/icon/search.png"
+                                     onclick="loadYukyuInfoDialog('36');">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">有休残り時間</div>
+                        <div class="data">160:00</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Paid Leave取得日数</div>
+                        <div class="data">0.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Paid Leave残り日数</div>
+                        <div class="data">0.0日
+                            <a class="ow btn-edit tip" style="margin-top: -3px; margin-left: 0px;">
+                                <img src="/ap/assets/common/images/icon/search.png"
+                                     onclick="loadLeaveInfoDialog('36', 'leaveRemainingDays2');">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">GW Substit取得日数</div>
+                        <div class="data">0.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">GW Substit残り日数</div>
+                        <div class="data">0.0日
+                            <a class="ow btn-edit tip" style="margin-top: -3px; margin-left: 0px;">
+                                <img src="/ap/assets/common/images/icon/search.png"
+                                     onclick="loadLeaveInfoDialog('36', 'leaveRemainingDays35');">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Sick Leave取得日数</div>
+                        <div class="data">0.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Sick Leave残り日数</div>
+                        <div class="data">0.0日
+                            <a class="ow btn-edit tip" style="margin-top: -3px; margin-left: 0px;">
+                                <img src="/ap/assets/common/images/icon/search.png"
+                                     onclick="loadLeaveInfoDialog('36', 'leaveRemainingDays36');">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Unpaid Lea取得日数</div>
+                        <div class="data">0.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Wedding取得日数</div>
+                        <div class="data">0.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Wedding残り日数</div>
+                        <div class="data">0.0日
+                            <a class="ow btn-edit tip" style="margin-top: -3px; margin-left: 0px;">
+                                <img src="/ap/assets/common/images/icon/search.png"
+                                     onclick="loadLeaveInfoDialog('36', 'leaveRemainingDays68');">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Condolence取得日数</div>
+                        <div class="data">0.0日</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Condolence残り日数</div>
+                        <div class="data">0.0日
+                            <a class="ow btn-edit tip" style="margin-top: -3px; margin-left: 0px;">
+                                <img src="/ap/assets/common/images/icon/search.png"
+                                     onclick="loadLeaveInfoDialog('36', 'leaveRemainingDays70');">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-attendanceChart-summary-title">
+                勤務区分項目
+            </div>
+            <div id="AC_SUMMARY_3" class="h-attendanceChart-summary-flex-wrapper" style="">
+                <div class="h-attendanceChart-summary-flex">
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Attendance/Work</div>
+                        <div class="data">7</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Unpaid Leave</div>
+                        <div class="data">0</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Paid Leave</div>
+                        <div class="data">0</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Half Day Leave AM</div>
+                        <div class="data">0</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Half Day Leave PM</div>
+                        <div class="data">0</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">GW Substitute Leave</div>
+                        <div class="data">0</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Wedding Leave</div>
+                        <div class="data">0</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Paternity Leagve</div>
+                        <div class="data">0</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Condolence Leave</div>
+                        <div class="data">0</div>
+                    </div>
+                    <div class="h-attendanceChart-summary-flex-content">
+                        <div class="title">Sick Leave</div>
+                        <div class="data">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+    </form>
+</div>
