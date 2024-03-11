@@ -35,18 +35,19 @@ def balance(exclude_last_day: bool) -> None:
 def when_to_leave() -> None:
     attendance_chart = until_today(_get_attendance_chart())
     try:
-        leave_time, includes_break = time.get_leave_time(attendance_chart)
+        leave_times = time.get_leave_time(attendance_chart)
     except NoClockInError:
         print("You have already clocked out.")
         return
 
-    current_time = Duration.now()
-    if leave_time <= current_time:
-        print("Leave today as early as you like.")
-        return
-
-    break_msg = "(includes a 1-hour break)" if includes_break else "(break time not included)"
-    print(f"Leave today at {leave_time} to avoid overtime {break_msg}.")
+    if len(leave_times) == 1:
+        break_msg = "(includes a 1-hour break)" if leave_times[0].includes_break else "(break time not included)"
+        print(f"Leave at {leave_times[0].min_time} to avoid overtime {break_msg}.")
+    else:
+        print(
+            f"Leave between {leave_times[0].min_time} and {leave_times[0].max_time}, or """
+            f"after {leave_times[1].min_time}."
+        )
 
 
 def update_config() -> None:

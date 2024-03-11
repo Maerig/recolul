@@ -1,3 +1,4 @@
+import dataclasses
 from collections import defaultdict
 from datetime import datetime
 
@@ -91,7 +92,14 @@ def get_overtime_balance(attendance_chart: AttendanceChart) -> tuple[Duration, d
     return sum(history, Duration()), total_workplace_times
 
 
-def get_leave_time(attendance_chart: AttendanceChart) -> tuple[Duration, bool]:
+@dataclasses.dataclass
+class LeaveTime:
+    includes_break: bool
+    min_time: Duration
+    max_time: Duration | None = None
+
+
+def get_leave_time(attendance_chart: AttendanceChart) -> list[LeaveTime]:
     day_base_hours = Duration(8 * 60)
     overtime_balance, _ = get_overtime_balance(attendance_chart[:-1])
 
@@ -107,16 +115,29 @@ def get_leave_time(attendance_chart: AttendanceChart) -> tuple[Duration, bool]:
     if not last_clock_in:
         raise NoClockInError()
 
-    leave_time = last_clock_in + day_base_hours - overtime_balance
-
-    # When more than 6 hours must be achieved during the day,
-    # add a mandatory 1-hour break time.
     required_today = day_base_hours - overtime_balance
+    leave_time_without_break = last_clock_in + required_today
+    leave_time_with_break = last_clock_in + required_today + Duration(60)
     if required_today > _MIN_HOURS_FOR_MANDATORY_BREAK:
-        leave_time += Duration(60)
-        return leave_time, True
-
-    return leave_time, False
+        # When more than 6 hours must be achieved during the day,
+        # add a mandatory 1-hour break time.
+        return [
+            LeaveTime(includes_break=True, min_time=leave_time_with_break)
+        ]
+    if required_today > _MIN_HOURS_FOR_MANDATORY_BREAK - Duration(60):
+        # When the required time is between 5 and 6 hours, there is a first interval where
+        # the overtime balance becomes positive, and then it becomes negative again when 6
+        # hours have been worked because an hour is subtracted for break time.
+        first_leave_time = LeaveTime(
+            includes_break=False,
+            min_time=leave_time_without_break,
+            max_time=last_clock_in + _MIN_HOURS_FOR_MANDATORY_BREAK
+        )
+        second_leave_time = LeaveTime(includes_break=True, min_time=leave_time_with_break)
+        return [first_leave_time, second_leave_time]
+    return [
+            LeaveTime(includes_break=False, min_time=leave_time_without_break)
+        ]
 
 
 def count_working_days(attendance_chart: AttendanceChart) -> int:

@@ -3,7 +3,7 @@ import os.path
 from recolul.duration import Duration
 from recolul.recoru.attendance_chart import AttendanceChart
 from recolul.recoru.recoru_session import RecoruSession
-from recolul.time import get_overtime_history
+from recolul.time import LeaveTime, get_leave_time, get_overtime_history
 
 RESOURCES_FOLDER = os.path.realpath(f"{__file__}/../resources")
 
@@ -75,3 +75,28 @@ def test_clock_out_after_midnight():
         "HF Bldg.": Duration.parse("08:12"),
         "WFH": Duration.parse("05:59") + Duration.parse("03:00") + Duration.parse("02:17")
     }
+
+
+def test_leave_time_with_break():
+    chart = load_mock_attendance_chart("when_break.html")
+    leave_times = get_leave_time(chart)
+    assert leave_times == [
+        LeaveTime(includes_break=True, min_time=Duration.parse("18:31"))
+    ]
+
+
+def test_leave_time_no_break():
+    chart = load_mock_attendance_chart("when_no_break.html")
+    leave_times = get_leave_time(chart)
+    assert leave_times == [
+        LeaveTime(includes_break=False, min_time=Duration.parse("13:39"))
+    ]
+
+
+def test_double_leave_time():
+    chart = load_mock_attendance_chart("when_double_leave.html")
+    leave_times = get_leave_time(chart)
+    assert leave_times == [
+        LeaveTime(includes_break=False, min_time=Duration.parse("14:22"), max_time=Duration.parse("15:00")),
+        LeaveTime(includes_break=True, min_time=Duration.parse("15:22"))
+    ]
