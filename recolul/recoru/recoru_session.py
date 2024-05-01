@@ -36,11 +36,14 @@ class RecoruSession:
     def read_attendance_chart_file(cls, path: str) -> AttendanceChart:
         """Used for testing"""
 
-        with open(path, "rt") as attendance_chart_file:
+        with open(path, "rt", encoding="UTF-8") as attendance_chart_file:
             text = attendance_chart_file.read()
         return cls._parse_attendance_chart(text)
 
     def _login(self):
+        # Get a session ID
+        self.session.get("https://app.recoru.in/ap/")
+
         url = "https://app.recoru.in/ap/login"
         form_data = {
             "contractId": self._contract_id,
