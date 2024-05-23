@@ -8,7 +8,7 @@ from recolul.duration import Duration
 from recolul.errors import NoClockInError
 from recolul.recoru.attendance_chart import AttendanceChart
 from recolul.recoru.recoru_session import RecoruSession
-from recolul.time import get_entry_work_time, get_row_work_time, until_today
+from recolul.time import get_row_work_time, until_today
 
 
 def balance(exclude_last_day: bool) -> None:
@@ -41,7 +41,7 @@ def when_to_leave() -> None:
         return
 
     if len(leave_times) == 1:
-        break_msg = "(includes a 1-hour break)" if leave_times[0].includes_break else "(break time not included)"
+        break_msg = "(break time included)" if leave_times[0].includes_break else "(break time not included)"
         print(f"Leave at {leave_times[0].min_time} to avoid overtime {break_msg}.")
     else:
         print(

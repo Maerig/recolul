@@ -2,7 +2,7 @@ import configparser
 import os.path
 from dataclasses import dataclass
 
-CONFIG_PATH = os.path.realpath(f"{__file__}/../config.ini")
+DEFAULT_CONFIG_PATH = os.path.realpath(f"{__file__}/../config.ini")
 
 
 @dataclass
@@ -23,24 +23,24 @@ class Config:
             return None
 
     @classmethod
-    def load(cls):
-        if not os.path.isfile(CONFIG_PATH):
+    def load(cls, path: str = DEFAULT_CONFIG_PATH):
+        if not os.path.isfile(path):
             return None
 
         config = configparser.ConfigParser(interpolation=None)
-        config.read(CONFIG_PATH)
+        config.read(path)
         return cls(
             recoru_contract_id=config["recoru"]["contractId"],
             recoru_auth_id=config["recoru"]["authId"],
             recoru_password=config["recoru"]["password"]
         )
 
-    def save(self):
+    def save(self, path: str = DEFAULT_CONFIG_PATH):
         config = configparser.ConfigParser(interpolation=None)
         config["recoru"] = {
             "authId": self.recoru_auth_id,
             "contractId": self.recoru_contract_id,
             "password": self.recoru_password
         }
-        with open(CONFIG_PATH, "w") as config_file:
+        with open(path, "w") as config_file:
             config.write(config_file)

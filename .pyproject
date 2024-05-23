@@ -1,0 +1,21 @@
+{
+    "files": [
+        "gui/__init__.py",
+        "gui/icon.png",
+        "gui/main.py",
+        "gui/settings_dialog.py",
+        "gui/summary.py",
+        "gui/this_month.py",
+        "gui/today.py",
+        "recolul/recoru/__init__.py",
+        "recolul/recoru/attendance_chart.py",
+        "recolul/recoru/recoru_session.py",
+        "recolul/__init__.py",
+        "recolul/cli.py",
+        "recolul/config.py",
+        "recolul/duration.py",
+        "recolul/errors.py",
+        "recolul/plotting.py",
+        "recolul/time.py"
+    ]
+}
