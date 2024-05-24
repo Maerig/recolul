@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+from recolul.errors import InvalidRecoruLoginError
 from recolul.recoru.attendance_chart import AttendanceChart, ChartHeader, ChartRow, ChartRowEntry
 
 
@@ -52,6 +53,8 @@ class RecoruSession:
         }
         response = self.session.post(url, data=form_data)
         response.raise_for_status()
+        if "message-err" in response.text:
+            raise InvalidRecoruLoginError()
 
     @staticmethod
     def _parse_attendance_chart(text: str) -> AttendanceChart:
