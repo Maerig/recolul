@@ -1,8 +1,9 @@
 {
     "files": [
         "gui/__init__.py",
-        "gui/icon.png",
         "gui/main.py",
+        "gui/rc_icons.py",
+        "gui/settings.py",
         "gui/settings_dialog.py",
         "gui/summary.py",
         "gui/this_month.py",

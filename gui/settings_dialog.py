@@ -1,10 +1,10 @@
 from PySide6.QtWidgets import QDialog, QFormLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 
-from recolul.config import Config
+from gui.settings import Settings
 
 
 class SettingsDialog(QDialog):
-    def __init__(self, parent: QWidget | None = None, config: Config | None = None):
+    def __init__(self, settings: Settings, parent: QWidget | None = None):
         super().__init__(parent)
         self.setWindowTitle("Settings")
         self.setMinimumSize(300, 150)
@@ -21,10 +21,9 @@ class SettingsDialog(QDialog):
         self._password_line_edit = QLineEdit()
         self._password_line_edit.setEchoMode(QLineEdit.EchoMode.Password)
 
-        if config is not None:
-            self._contract_id_line_edit.setText(config.recoru_contract_id)
-            self._auth_id_line_edit.setText(config.recoru_auth_id)
-            self._password_line_edit.setText(config.recoru_password)
+        self._contract_id_line_edit.setText(settings.recoru_contract_id)
+        self._auth_id_line_edit.setText(settings.recoru_auth_id)
+        self._password_line_edit.setText(settings.recoru_password)
 
         self._save_button = QPushButton("Save")
         self._save_button.clicked.connect(self._save)
@@ -39,15 +38,12 @@ class SettingsDialog(QDialog):
 
         layout.addWidget(self._save_button)
 
-    def get_config(self) -> Config | None:
-        contract_id = self._contract_id_line_edit.text()
-        auth_id = self._auth_id_line_edit.text()
-        password = self._password_line_edit.text()
-
-        if not any([contract_id, auth_id, password]):
-            return None
-
-        return Config(contract_id, auth_id, password)
+    def get_settings(self) -> Settings:
+        return Settings(
+            self._contract_id_line_edit.text(),
+            self._auth_id_line_edit.text(),
+            self._password_line_edit.text()
+        )
 
     def _save(self):
         self.done(0)
