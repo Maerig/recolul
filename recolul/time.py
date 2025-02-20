@@ -24,7 +24,9 @@ def get_entry_work_time(entry: ChartRowEntry) -> Duration:
     else calculate it from clock-in time and current time
     """
     category = entry.category
-    if category.startswith("Half Day Leave"):
+    if category.startswith(
+        ("Half Day Leave", "Flexible Holiday AM", "Flexible Holiday PM")
+    ):
         return Duration(4 * 60)
     if category.endswith(("Leave", "Leagve")) or category == "Flexible Holiday":
         return Duration(8 * 60)
