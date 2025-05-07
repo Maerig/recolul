@@ -66,10 +66,10 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
     total_workplace_times = defaultdict(Duration)
     for row in attendance_chart:
         day = row.day.text
-        if not _is_working_day(row):
-            required_time = Duration(0)
-        else:
+        if _is_working_day(row) or _is_swap_day(row):
             required_time = Duration(8 * 60)
+        else:
+            required_time = Duration(0)
 
         row_work_time = Duration()
         for entry in row.entries:
@@ -143,12 +143,12 @@ def get_leave_time(attendance_chart: AttendanceChart) -> list[LeaveTime]:
 
 
 def count_working_days(attendance_chart: AttendanceChart) -> int:
-    return sum(
-        1
-        for row in attendance_chart
-        if _is_working_day(row)
-    )
+    return sum(1 for row in attendance_chart if _is_working_day(row))
+
+
+def _is_swap_day(row: ChartRow) -> bool:
+    return "swap day" in row.memo.lower()
 
 
 def _is_working_day(row: ChartRow) -> bool:
-    return row.day.text and row.day.color not in ["blue", "red"] or "swap day" in row.memo.lower()
+    return row.day.text and row.day.color not in ["blue", "red"]

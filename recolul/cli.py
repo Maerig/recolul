@@ -21,7 +21,9 @@ def balance(exclude_last_day: bool) -> None:
     print(f"Total time per workplace:")
     for workplace, total_work_time in total_workplace_times.items():
         print(f"  {workplace}: {total_work_time}")
-    print(f"Maximum WFH time this month: {Duration(60) * time.count_working_days(full_attendance_chart)}")
+    print(
+        f"Maximum WFH time this month: {Duration(60) * time.count_working_days(full_attendance_chart)}"
+    )
 
     if exclude_last_day:
         return
