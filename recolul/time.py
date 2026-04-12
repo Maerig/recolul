@@ -2,6 +2,7 @@ import dataclasses
 from collections import defaultdict
 from datetime import datetime
 
+from recolul.config import Config
 from recolul.duration import Duration
 from recolul.errors import NoClockInError
 from recolul.recoru.attendance_chart import AttendanceChart, ChartRow, ChartRowEntry
@@ -18,22 +19,23 @@ def until_today(attendance_chart: AttendanceChart) -> AttendanceChart:
     ]
 
 
-def get_max_wfh_time(full_attendance_chart: AttendanceChart) -> Duration:
+def get_max_wfh_time(full_attendance_chart: AttendanceChart, config: Config) -> Duration:
     """Returns the total WFH time doable this month"""
-    return Duration(60) * count_working_days(full_attendance_chart)
+    wfh_minutes_per_day = int(config.wfh_hours_per_day * 60)
+    return Duration(wfh_minutes_per_day) * count_working_days(full_attendance_chart)
 
 
-def get_remaining_wfh_time(full_attendance_chart: AttendanceChart):
+def get_remaining_wfh_time(full_attendance_chart: AttendanceChart, config: Config):
     """Returns the remaining WFH hours doable this month"""
-    max_wfh_hours = get_max_wfh_time(full_attendance_chart)
+    max_wfh_hours = get_max_wfh_time(full_attendance_chart, config)
     attendance_chart = until_today(full_attendance_chart)
-    _, total_workplace_times = get_overtime_balance(attendance_chart[:-1])
+    _, total_workplace_times = get_overtime_balance(attendance_chart[:-1], config)
 
     remaining = max_wfh_hours - total_workplace_times.get("WFH", Duration(0))
     return remaining if remaining else Duration(0)
 
 
-def get_entry_work_time(entry: ChartRowEntry) -> Duration:
+def get_entry_work_time(entry: ChartRowEntry, config: Config) -> Duration:
     """
     Get work time from the column if available,
     else calculate it from clock-in time and current time
@@ -42,9 +44,9 @@ def get_entry_work_time(entry: ChartRowEntry) -> Duration:
     if category.startswith(
         ("Half Day Leave", "Flexible Holiday AM", "Flexible Holiday PM")
     ):
-        return Duration(4 * 60)
+        return Duration(config.hours_per_day * 60 // 2)
     if category.endswith(("Leave", "Leagve")) or category == "Flexible Holiday":
-        return Duration(8 * 60)
+        return Duration(config.hours_per_day * 60)
 
     if not (raw_clock_in_time := entry.clock_in_time):
         return Duration(0)
@@ -68,27 +70,29 @@ def get_entry_work_time(entry: ChartRowEntry) -> Duration:
     return work_time - break_time
 
 
-def get_row_work_time(row: ChartRow) -> Duration:
+def get_row_work_time(row: ChartRow, config: Config) -> Duration:
     total_work_time = Duration()
     for entry in row.entries:
-        total_work_time += get_entry_work_time(entry)
+        total_work_time += get_entry_work_time(entry, config)
     return total_work_time
 
 
-def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], list[Duration], dict[str, Duration]]:
+def get_overtime_history(
+    attendance_chart: AttendanceChart, config: Config
+) -> tuple[list[str], list[Duration], dict[str, Duration]]:
     days = []
     overtime_history = []
     total_workplace_times = defaultdict(Duration)
     for row in attendance_chart:
         day = row.day.text
         if _is_working_day(row) or _is_swap_day(row):
-            required_time = Duration(8 * 60)
+            required_time = Duration(config.hours_per_day * 60)
         else:
             required_time = Duration(0)
 
         row_work_time = Duration()
         for entry in row.entries:
-            entry_work_time = get_entry_work_time(entry)
+            entry_work_time = get_entry_work_time(entry, config)
             row_work_time += entry_work_time
 
             workplace = entry.workplace or "HF Bldg."  # Workplace is empty for paid leaves
@@ -104,8 +108,10 @@ def get_overtime_history(attendance_chart: AttendanceChart) -> tuple[list[str], 
     return days, overtime_history, total_workplace_times
 
 
-def get_overtime_balance(attendance_chart: AttendanceChart) -> tuple[Duration, dict[str, Duration]]:
-    _, history, total_workplace_times = get_overtime_history(attendance_chart)
+def get_overtime_balance(
+    attendance_chart: AttendanceChart, config: Config
+) -> tuple[Duration, dict[str, Duration]]:
+    _, history, total_workplace_times = get_overtime_history(attendance_chart, config)
     return sum(history, Duration()), total_workplace_times
 
 
@@ -118,10 +124,10 @@ class LeaveTime:
     wfh_cutoff_includes_break: bool = False
 
 
-def get_leave_time(full_attendance_chart: AttendanceChart) -> list[LeaveTime]:
+def get_leave_time(full_attendance_chart: AttendanceChart, config: Config) -> list[LeaveTime]:
     attendance_chart = until_today(full_attendance_chart)
-    day_base_hours = Duration(8 * 60)
-    overtime_balance, _ = get_overtime_balance(attendance_chart[:-1])
+    day_base_hours = Duration(config.hours_per_day * 60)
+    overtime_balance, _ = get_overtime_balance(attendance_chart[:-1], config)
 
     last_row = attendance_chart[-1]
     last_clock_in = None
@@ -133,14 +139,14 @@ def get_leave_time(full_attendance_chart: AttendanceChart) -> list[LeaveTime]:
             is_wfh = entry.workplace == "WFH"
         else:
             # Complete entry
-            overtime_balance += get_entry_work_time(entry)
+            overtime_balance += get_entry_work_time(entry, config)
     if not last_clock_in:
         raise NoClockInError()
 
     required_today = day_base_hours - overtime_balance
 
     # When in WFH, the required hours cannot exceed the remaining WFH hours.
-    wfh_remaining_hours = get_remaining_wfh_time(full_attendance_chart)
+    wfh_remaining_hours = get_remaining_wfh_time(full_attendance_chart, config)
     wfh_cutoff_time: Duration | None = None
     wfh_cutoff_includes_break = False
     if is_wfh and wfh_remaining_hours < required_today:

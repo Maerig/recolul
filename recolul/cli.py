@@ -3,24 +3,24 @@ import sys
 from getpass import getpass
 
 from recolul import __version__, plotting, time
-from recolul.config import Config
+from recolul.config import Config, DEFAULT_HOURS_PER_DAY, DEFAULT_WFH_HOURS_PER_DAY
 from recolul.errors import NoClockInError
 from recolul.recoru.attendance_chart import AttendanceChart
 from recolul.recoru.recoru_session import RecoruSession
 from recolul.time import get_max_wfh_time, get_row_work_time, until_today
 
 
-def balance(exclude_last_day: bool) -> None:
-    full_attendance_chart = _get_attendance_chart()
+def balance(config: Config, exclude_last_day: bool) -> None:
+    full_attendance_chart = _get_attendance_chart(config)
     attendance_chart = until_today(full_attendance_chart)
     if exclude_last_day and len(attendance_chart) > 1:
         attendance_chart = attendance_chart[:-1]
-    overtime_balance, total_workplace_times = time.get_overtime_balance(attendance_chart)
+    overtime_balance, total_workplace_times = time.get_overtime_balance(attendance_chart, config)
     print(f"Monthly overtime balance: {overtime_balance}")
     print(f"Total time per workplace:")
     for workplace, total_work_time in total_workplace_times.items():
         print(f"  {workplace}: {total_work_time}")
-    print(f"Maximum WFH time this month: {get_max_wfh_time(full_attendance_chart)}")
+    print(f"Maximum WFH time this month: {get_max_wfh_time(full_attendance_chart, config)}")
 
     if exclude_last_day:
         return
@@ -28,13 +28,13 @@ def balance(exclude_last_day: bool) -> None:
     last_day = attendance_chart[-1]
     print(f"\nLast day {last_day.day.text}")
     print(f"  Clock-in: {max(entry.clock_in_time for entry in last_day.entries)}")
-    print(f"  Working hours: {get_row_work_time(last_day)}")
+    print(f"  Working hours: {get_row_work_time(last_day, config)}")
 
 
-def when_to_leave() -> None:
+def when_to_leave(config: Config) -> None:
     try:
-        full_attendance_chart = _get_attendance_chart()
-        leave_times = time.get_leave_time(full_attendance_chart)
+        full_attendance_chart = _get_attendance_chart(config)
+        leave_times = time.get_leave_time(full_attendance_chart, config)
     except NoClockInError:
         print("You have already clocked out.")
         return
@@ -61,19 +61,23 @@ def update_config() -> None:
     recoru_contract_id = input("recoru.contractId: ")
     recoru_auth_id = input("recoru.authId: ")
     recoru_password = getpass("recoru.password: ")
+    hours_per_day = input(f"recoru.hoursPerDay [{DEFAULT_HOURS_PER_DAY}]: ") or str(DEFAULT_HOURS_PER_DAY)
+    wfh_hours_per_day = input(f"recoru.wfhHoursPerDay [{DEFAULT_WFH_HOURS_PER_DAY}]: ") or str(DEFAULT_WFH_HOURS_PER_DAY)
     config = Config(
         recoru_contract_id=recoru_contract_id,
         recoru_auth_id=recoru_auth_id,
-        recoru_password=recoru_password
+        recoru_password=recoru_password,
+        hours_per_day=int(hours_per_day),
+        wfh_hours_per_day=float(wfh_hours_per_day),
     )
     config.save()
 
 
-def graph(exclude_last_day: bool) -> None:
-    attendance_chart = until_today(_get_attendance_chart())
+def graph(config: Config, exclude_last_day: bool) -> None:
+    attendance_chart = until_today(_get_attendance_chart(config))
     if exclude_last_day and len(attendance_chart) > 1:
         attendance_chart = attendance_chart[:-1]
-    days, history, _ = time.get_overtime_history(attendance_chart)
+    days, history, _ = time.get_overtime_history(attendance_chart, config)
     plotting.plot_overtime_balance_history(days, history)
 
 
@@ -101,22 +105,24 @@ def main() -> None:
     )
 
     args = parser.parse_args(sys.argv[1:])
-    match args.command:
-        case "balance":
-            balance(exclude_last_day=args.exclude_last_day)
-        case "when":
-            when_to_leave()
-        case "config":
-            update_config()
-        case "graph":
-            graph(exclude_last_day=args.exclude_last_day)
+    if args.command == "config":
+        update_config()
+        return
 
-
-def _get_attendance_chart() -> AttendanceChart:
     config = Config.from_env() or Config.load()
     if not config:
-        raise RuntimeError(f"No config found")
+        raise RuntimeError("No config found")
 
+    match args.command:
+        case "balance":
+            balance(config, exclude_last_day=args.exclude_last_day)
+        case "when":
+            when_to_leave(config)
+        case "graph":
+            graph(config, exclude_last_day=args.exclude_last_day)
+
+
+def _get_attendance_chart(config: Config) -> AttendanceChart:
     with RecoruSession(
         contract_id=config.recoru_contract_id,
         auth_id=config.recoru_auth_id,
