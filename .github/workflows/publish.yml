@@ -1,0 +1,39 @@
+name: Publish Package
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - "recolul/__init__.py"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/test
+
+  build-and-publish:
+    needs: test
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write  # Needed for trusted publishing
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+
+      - name: Install build dependencies
+        shell: bash
+        run: pip install .[dev]
+
+      - name: Build package
+        shell: bash
+        run: python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
